@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-serialPort" version="1.0">
+    <name>SerialPortActivity</name>
+    <description>Cordova Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords></keywords>
+    <repo></repo>
+    <issue></issue>
+    <js-module src="www/SerialPortActivity.js" name="SerialPortActivity">
+        <clobbers target="SerialPortActivity" />
+    </js-module>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="SerialPortActivity">
+                <param name="android-package" value="android_serialport_api.sample.SerialPortActivity"/>
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+        <source-file src="src/android/api/SerialPort.java" target-dir="src/android_serialport_api"/>
+        <source-file src="src/android/api/SerialPortFinder.java" target-dir="src/android_serialport_api"/>
+        <source-file src="src/android/Application.java" target-dir="src/com/ionicframework/starter"/>
+        <source-file src="src/android/SerialPortActivity.java" target-dir="src/android_serialport_api/sample"/>
+        
+        <source-file src="src/android/jni/Android.mk" target-dir="jni"/>
+        <source-file src="src/android/jni/Application.mk" target-dir="jni"/>
+        <source-file src="src/android/jni/gen_SerialPort_h.sh" target-dir="jni"/>
+        <source-file src="src/android/jni/SerialPort.c" target-dir="jni"/>
+        <source-file src="src/android/jni/SerialPort.h" target-dir="jni"/>
+
+        <source-file src="src/android/libs/armeabi/libserial_port.so" target-dir="libs/armeabi"/>
+        <source-file src="src/android/libs/armeabi-v7a/libserial_port.so" target-dir="libs/armeabi-v7a"/>
+        <source-file src="src/android/libs/x86/libserial_port.so" target-dir="libs/x86"/>
+    </platform>
+ 
+</plugin>
