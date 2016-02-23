@@ -20,10 +20,6 @@ import android.R.bool;
 import android_serialport_api.SerialPort;
 import android_serialport_api.SerialPortFinder;
 
-/**
- * 
- * @author jiadx callbackContext.success(m);m==1鎵撳紑绔彛鎴愬姛锛�0鎵撳紑绔彛澶辫触
- */
 public class SerialPortActivity extends CordovaPlugin {
 
 	private SerialPortFinder mSerialPortFinder = new SerialPortFinder();;
@@ -86,7 +82,7 @@ public class SerialPortActivity extends CordovaPlugin {
 		mApplication = (Application) cordova.getActivity().getApplication();
 		
 		instance = this;
-		if (action.equals("getSerialPort")) {// 鑾峰彇鏈嶅姟绔彛
+		if (action.equals("getSerialPort")) {
 			JSONArray resArr = new JSONArray();
 			String[] entryValues = mSerialPortFinder.getAllDevicesPath();
 			for (int i = 0; i < entryValues.length; i++) {
@@ -94,20 +90,20 @@ public class SerialPortActivity extends CordovaPlugin {
 			}
 			callbackContext.success(resArr);
 			return true;
-		} else if (action.equals("openSerialPort")) {// 鎵撳紑绔彛
+		} else if (action.equals("openSerialPort")) {
 			openSerialPort(args, callbackContext);
 			return true;
-		} else if (action.equals("closeSerialPort")) {// 鍏抽棴绔彛
+		} else if (action.equals("closeSerialPort")) {
 			closeSerialPort(callbackContext);
 			return true;
-		} else if (action.equals("emission")) {// 鍐欐暟鎹�
+		} else if (action.equals("emission")) {
 			emission(args,callbackContext);
 			return true;
 		}else if(action.equals("registry")){
 			registry(callbackContext);
 			return true;
 		}
-		else if (action.equals("portDetect")) {// 妫�娴嬬鍙ｅ紑鍏�
+		else if (action.equals("portDetect")) {
 			if (mSerialPort != null) {
 				callbackContext.success(1);
 			} else {
@@ -143,12 +139,15 @@ public class SerialPortActivity extends CordovaPlugin {
 	
 	
 	protected void onDataReceived(final byte[] buffer, final int size) {
-	
+		final byte[] dataBuffer=new byte[size];
+		for(int i=0;i<size;i++){
+			dataBuffer[i]=buffer[i];
+		}
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			public void run() {
 				CallbackContext callback=mApplication.getCallbackContext();
 				if (callback != null) {
-		            PluginResult result = new PluginResult(PluginResult.Status.OK, buffer);
+		            PluginResult result = new PluginResult(PluginResult.Status.OK, dataBuffer);
 		            result.setKeepCallback(true);
 		            callback.sendPluginResult(result);
 		            Size=0;
