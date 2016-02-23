@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 
 import com.ionicframework.starter.Application;
 
+import android.R.bool;
 import android_serialport_api.SerialPort;
 import android_serialport_api.SerialPortFinder;
 
@@ -32,7 +35,10 @@ public class SerialPortActivity extends CordovaPlugin {
 	private SerialPortActivity instance;
 	private int baudRate;
 	private String port;
-
+	private int Size=0;
+	private boolean isTimer=true;
+	private byte[] dateBuffer=new byte[64];
+	private Long interval=(long) 0;
 	private class ReadThread extends Thread {
 		@Override
 		public void run() {
@@ -40,10 +46,32 @@ public class SerialPortActivity extends CordovaPlugin {
 			while (!isInterrupted()) {
 				int size;
 				try {
+					
 					byte[] buffer = new byte[64];
 					size = mInputStream.read(buffer);
-					if (size > 0) {
-						onDataReceived(buffer, size);
+					interval=System.currentTimeMillis();
+					for(int i=0;i<size;i++){
+						dateBuffer[Size+i] = buffer[i];
+					};
+					Size+=size;
+					if (size > 0&&Size>0) {
+						if(isTimer){
+							isTimer=false;
+							final Timer timer = new Timer(); 
+							timer.schedule(new TimerTask(){
+								public void run(){
+									Long tsLong = System.currentTimeMillis();
+									if(tsLong-75>interval){
+										onDataReceived(dateBuffer, Size);
+										interval=(long) 0;
+										Size=0;
+										dateBuffer=new byte[64];
+										timer.cancel();
+										isTimer=true;
+									}
+								}
+							}, 75, 75);
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -112,8 +140,10 @@ public class SerialPortActivity extends CordovaPlugin {
 		});
 
 	}
-
+	
+	
 	protected void onDataReceived(final byte[] buffer, final int size) {
+	
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			public void run() {
 				CallbackContext callback=mApplication.getCallbackContext();
@@ -121,6 +151,7 @@ public class SerialPortActivity extends CordovaPlugin {
 		            PluginResult result = new PluginResult(PluginResult.Status.OK, buffer);
 		            result.setKeepCallback(true);
 		            callback.sendPluginResult(result);
+		            Size=0;
 		        }
 			
 			}

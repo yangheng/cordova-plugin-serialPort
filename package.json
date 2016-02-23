@@ -1,5 +1,5 @@
 {
-  "name": "cordova-plugin-serialPort",
+  "name": "cordova-plugin-serialPort-sample",
   "version": "1.0.0",
   "description": "Cordova Plugin",
   "cordova": {
@@ -17,9 +17,13 @@
     "cordova-android"
   ],
   "author": "yangheng",
-  "license": "Apache 2.0",
+  "license": " ",
   "bugs": {
     "url": "https://github.com/yangheng/cordova-plugin-serialPort/issues"
   },
-  "homepage": "https://github.com/yangheng/cordova-plugin-serialPort#readme"
+  "homepage": "https://github.com/yangheng/cordova-plugin-serialPort#readme",
+  "main": " ",
+  "scripts": {
+    "test": " "
+  }
 }
